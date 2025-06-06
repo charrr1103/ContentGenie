@@ -1,4 +1,4 @@
-class OrchestratorAgent:
+class Agent:
     def __init__(self):
         self.logger = setup_logger()
         self.agents = {
