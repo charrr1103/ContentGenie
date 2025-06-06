@@ -1,4 +1,4 @@
-from google.adk.agents import LlmAgent
+from google.adk.agents import Agent
 from google.adk.tools.agent_tool import AgentTool
 
 from . import prompt 
@@ -11,7 +11,7 @@ from .subagents.formatter_agent import formatter_agent
 
 MODEL = "gemini-2.5-pro-preview-05-06"
 
-contentgenie_orchestrator = LlmAgent(
+contentgenie_orchestrator = Agent(
     name="contentgenie_orchestrator",
     model=MODEL,
     description="An AI-powered content generation and marketing automation agent.",
