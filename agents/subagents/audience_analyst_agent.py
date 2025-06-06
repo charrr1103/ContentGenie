@@ -1,5 +1,5 @@
 # Audience Analyst Agent
-from contentgenie.agent import root_agent
+from agents.agent import root_agent
 
 class AudienceAnalystAgent(root_agent):
     def __init__(self):
