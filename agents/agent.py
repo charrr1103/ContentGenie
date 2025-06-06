@@ -1,38 +1,29 @@
-class Agent:
-    def __init__(self):
-        self.logger = setup_logger()
-        self.agents = {
-            "audience_analyst": AudienceAnalystAgent(),
-            "content_strategist": ContentStrategistAgent(),
-            "copywriter": CopywriterAgent(),
-            "formatter": FormatterAgent(),
-            "reviewer": ReviewerAgent(),
-            "scheduler": SchedulerAgent(),
-        }
+from google.adk.agents import LlmAgent
+from google.adk.tools.agent_tool import AgentTool
 
-    def run(self, product_description, campaign_goal):
-        try:
-            self.logger.info("🔍 Step 1: Analyzing audience...")
-            audience = self.agents["audience_analyst"].analyze(product_description)
+from . import prompt
+from .sub_agents.audience_analyst import audience_analyst_agent
+from .sub_agents.content_strategist import content_strategist_agent
+from .sub_agents.copywriter import copywriter_agent
+from .sub_agents.formatter import formatter_agent
+from .sub_agents.reviewer import reviewer_agent
+from .sub_agents.scheduler import scheduler_agent
 
-            self.logger.info("🧠 Step 2: Creating content strategy...")
-            strategy = self.agents["content_strategist"].plan(audience, campaign_goal)
+MODEL = "gemini-2.5-pro-preview-05-06"
 
-            self.logger.info("✍️ Step 3: Generating copy...")
-            copy = self.agents["copywriter"].generate(strategy)
+contentgenie_orchestrator = LlmAgent(
+    name="contentgenie_orchestrator",
+    model=MODEL,
+    description="An AI-powered content generation and marketing automation agent.",
+    instruction=prompt.ORCHESTRATOR_PROMPT,
+    tools=[
+        AgentTool(agent=audience_analyst_agent),
+        AgentTool(agent=content_strategist_agent),
+        AgentTool(agent=copywriter_agent),
+        AgentTool(agent=formatter_agent),
+        AgentTool(agent=reviewer_agent),
+        AgentTool(agent=scheduler_agent),
+    ]
+)
 
-            self.logger.info("🧼 Step 4: Formatting content...")
-            formatted = self.agents["formatter"].format(copy)
-
-            self.logger.info("🔎 Step 5: Reviewing content...")
-            reviewed = self.agents["reviewer"].review(formatted)
-
-            self.logger.info("📆 Step 6: Scheduling content...")
-            calendar = self.agents["scheduler"].schedule(reviewed)
-
-            self.logger.info("✅ Pipeline complete!")
-            return calendar
-
-        except Exception as e:
-            self.logger.error("❌ Pipeline failed:", exc_info=True)
-            return {"error": str(e)}
+root_agent = contentgenie_orchestrator
