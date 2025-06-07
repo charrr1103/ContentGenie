@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import os
 import asyncio
 from google.adk.agents import Agent, LlmAgent # Ensure LlmAgent is imported
@@ -5,6 +6,9 @@ from google.adk.models.lite_llm import LiteLlm # For multi-model support (if use
 from google.adk.sessions import InMemorySessionService # No longer directly used here, but good to keep if needed elsewhere
 from google.adk.runners import Runner # No longer directly used here
 from google.genai import types # For creating message Content/Parts (if used directly)
+=======
+from google.adk.agents import Agent
+>>>>>>> 36f4e9ae1ede4db59424fb97c1f675f78c7cb85e
 from google.adk.tools.agent_tool import AgentTool
 
 import warnings
@@ -29,8 +33,12 @@ from .base_agent import BaseAgent
 
 MODEL = "gemini-2.5-pro-preview-05-06"
 
+<<<<<<< HEAD
 # Define the Orchestrator using your BaseAgent (which is an LlmAgent)
 contentgenie_orchestrator = BaseAgent(
+=======
+contentgenie_orchestrator = Agent(
+>>>>>>> 36f4e9ae1ede4db59424fb97c1f675f78c7cb85e
     name="contentgenie_orchestrator",
     model=MODEL, # This is correct for LlmAgent
     description="An AI-powered content generation and marketing automation agent.",
