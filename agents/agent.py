@@ -32,12 +32,18 @@ from .base_agent import BaseAgent
 
 MODEL = "gemini-2.5-pro-preview-05-06"
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> deb16e3a7677778a407506fe71e68c6ee550483f
 # Define the Orchestrator using your BaseAgent (which is an LlmAgent)
 contentgenie_orchestrator = BaseAgent
 
 contentgenie_orchestrator = Agent(
+<<<<<<< HEAD
 
+=======
+>>>>>>> deb16e3a7677778a407506fe71e68c6ee550483f
     name="contentgenie_orchestrator",
     model=MODEL, # This is correct for LlmAgent
     description="An AI-powered content generation and marketing automation agent.",
