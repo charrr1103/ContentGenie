@@ -11,7 +11,7 @@ For each content type, apply:
 - Proper paragraphing, spacing, line breaks
 - Professional but engaging tone unless otherwise specified
 
-INPUT: A dictionary of raw content with keys like "LinkedIn Post", "Marketing Email", "Landing Page".
+INPUT: A dictionary of raw content with keys like "LinkedIn Post", "Marketing Email", "Landing Page", "Instagram Post", "Facebook Post", "TikTok Video", "YouTube Video".
 
 OUTPUT FORMAT:
 {
@@ -24,6 +24,16 @@ OUTPUT FORMAT:
   "Formatted Landing Page": {
     "Headline": "...",
     "Subtext": "..."
+  },
+  "Formatted Instagram Post": "...",
+  "Formatted Facebook Post": "...",
+  "Formatted TikTok Video": {
+    "Concept": "...",
+    "Script": "..."
+  },
+  "Formatted YouTube Video": {
+    "Concept": "...",
+    "Description": "..."
   }
 }
 

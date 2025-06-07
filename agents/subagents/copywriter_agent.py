@@ -4,13 +4,15 @@ class CopywriterAgent(BaseAgent):
     def __init__(self):
         system_prompt = """
 You are the 'Copywriter' agent. Based on the audience analysis provided, generate concise, tailored marketing content for the following platforms:
-1. LinkedIn Post
-2. Marketing Email (with subject line and body)
-3. Landing Page Headline and Subtext
+1. Marketing Email (with subject line and body)
+2. Landing Page Headline and Subtext
+3. Instagram Post
+4. Facebook Post
+5. TikTok Video Script/Concept
+6. YouTube Video Concept/Description
 
 Format your response as:
 {
-  "LinkedIn Post": "...",
   "Marketing Email": {
     "Subject": "...",
     "Body": "..."
@@ -18,6 +20,16 @@ Format your response as:
   "Landing Page": {
     "Headline": "...",
     "Subtext": "..."
+  },
+  "Instagram Post": "...",
+  "Facebook Post": "...",
+  "TikTok Video": {
+    "Concept": "...",
+    "Script": "..."
+  },
+  "YouTube Video": {
+    "Concept": "...",
+    "Description": "..."
   },
   "Tone": "..."
 }
