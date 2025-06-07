@@ -1,7 +1,6 @@
-# Formatter Agent
-from agents.agent import root_agent
+from agents.base_agent import BaseAgent
 
-class FormatterAgent(root_agent):
+class FormatterAgent(BaseAgent):
     def __init__(self):
         system_prompt = """
 You are the 'Formatter' agent. Your job is to adapt raw marketing copy to fit the formatting, tone, and structure conventions of specific platforms.
@@ -16,13 +15,13 @@ INPUT: A dictionary of raw content with keys like "LinkedIn Post", "Marketing Em
 
 OUTPUT FORMAT:
 {
-  "LinkedIn": "...formatted content...",
-  "Email": {
+  "Formatted LinkedIn": "...",
+  "Formatted Email": {
     "Subject": "...",
     "Preview": "...",
     "Body": "..."
   },
-  "Landing Page": {
+  "Formatted Landing Page": {
     "Headline": "...",
     "Subtext": "..."
   }
@@ -30,4 +29,10 @@ OUTPUT FORMAT:
 
 Stay true to the original message, just make it platform-ready.
 """
-        super().__init__("Formatter", system_prompt)
+        super().__init__(
+            name="Formatter",
+            instruction=system_prompt,
+            description="Adapts raw marketing copy for platform-specific formatting."
+        )
+
+formatter_agent = FormatterAgent()

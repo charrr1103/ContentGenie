@@ -1,7 +1,6 @@
-# Audience Analyst Agent
-from agents.agent import root_agent
+from agents.base_agent import BaseAgent
 
-class AudienceAnalystAgent(root_agent):
+class AudienceAnalystAgent(BaseAgent):
     def __init__(self):
         system_prompt = """
 You are the 'Audience Analyst' agent. Provide a thorough, structured audience analysis based on context.
@@ -15,4 +14,13 @@ Format:
   "Confidence Score (1-10)": ""
 }
 """
-        super().__init__("Audience Analyst", system_prompt)
+        # Corrected super().__init__ call
+        # Pass name, and the system_prompt will be set as the instruction
+        super().__init__(
+            name="AudienceAnalyst",
+            instruction=system_prompt, # Pass system_prompt as instruction
+            description="Analyzes target audience for marketing campaigns." # Optional, but good practice
+            # Do NOT pass model here, it's defined in BaseAgent
+        )
+
+audience_analyst_agent = AudienceAnalystAgent()

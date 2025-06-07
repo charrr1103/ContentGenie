@@ -1,7 +1,6 @@
-# Copywriter Agent
-from agents.agent import root_agent
+from agents.base_agent import BaseAgent
 
-class CopywriterAgent(root_agent):
+class CopywriterAgent(BaseAgent):
     def __init__(self):
         system_prompt = """
 You are the 'Copywriter' agent. Based on the audience analysis provided, generate concise, tailored marketing content for the following platforms:
@@ -24,4 +23,12 @@ Format your response as:
 }
 Only generate text optimized for engagement based on the audience insights. Keep it punchy, outcome-oriented, and value-focused.
 """
-        super().__init__("Copywriter", system_prompt)
+        # Corrected super().__init__ call
+        super().__init__(
+            name="Copywriter",
+            instruction=system_prompt, # Pass system_prompt as instruction
+            description="Drafts marketing copy for various platforms." # Optional
+        )
+
+# Instantiate the agent
+copywriter_agent = CopywriterAgent()
