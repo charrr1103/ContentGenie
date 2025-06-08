@@ -37,10 +37,7 @@ MODEL = "gemini-1.5-pro-latest"
 contentgenie_orchestrator = BaseAgent
 
 contentgenie_orchestrator = Agent(
-<<<<<<< HEAD
 
-=======
->>>>>>> 47c626216216039ab5e282b995b75d9db8e9ffe1
     name="contentgenie_orchestrator",
     model=MODEL, # This is correct for LlmAgent
     description="An AI-powered content generation and marketing automation agent.",
