@@ -12,7 +12,7 @@ def check_file_for_null_bytes(file_path):
 files_to_check = [
     "agents/subagents/audience_analyst_agent.py",
     "agents/subagents/copywriter_agent.py",
-    "agents/subagents/formatter_agent.py",
+    "agents/subagents/content_strategist_agent.py"
 ]
 
 for path in files_to_check:
