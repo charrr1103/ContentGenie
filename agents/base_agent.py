@@ -15,7 +15,7 @@ class BaseAgent(LlmAgent):
 
     # LlmAgent expects these as class-level attributes or set via properties
     # Let's define the base model here.
-    model: str = "gemini-2.5-pro-preview-05-06"
+    model: str = "gemini-1.5-pro-latest"
     instruction: str = "" # This will be overridden by sub-agents
 
     def __init__(self, name: str, instruction: str, **kwargs):

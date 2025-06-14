@@ -24,6 +24,7 @@ from .subagents.audience_analyst_agent import audience_analyst_agent
 from .subagents.content_strategist_agent import content_strategist_agent
 from .subagents.copywriter_agent import copywriter_agent
 from .subagents.design_suggester_agent import design_suggester_agent
+from .subagents.image_generator_agent import image_generator_agent
 #from .subagents.reviewer_agent import reviewer_agent
 #from .subagents.scheduler_agent import scheduler_agent
 
@@ -36,7 +37,6 @@ MODEL = "gemini-1.5-pro-latest"
 contentgenie_orchestrator = BaseAgent
 
 contentgenie_orchestrator = Agent(
-
     name="contentgenie_orchestrator",
     model=MODEL, # This is correct for LlmAgent
     description="An AI-powered content generation and marketing automation agent.",
@@ -46,6 +46,7 @@ contentgenie_orchestrator = Agent(
         AgentTool(agent=content_strategist_agent),
         AgentTool(agent=copywriter_agent),
         AgentTool(agent=design_suggester_agent),
+        AgentTool(agent=image_generator_agent),
         #AgentTool(agent=reviewer_agent),
         #AgentTool(agent=scheduler_agent),
     ]
