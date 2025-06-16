@@ -1,0 +1,5 @@
+# requirements.txt
+google-adk
+google-cloud-aiplatform
+Pillow
+# Add any other libraries your project uses here
