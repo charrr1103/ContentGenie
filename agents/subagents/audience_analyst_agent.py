@@ -17,7 +17,8 @@ Respond in plain text, not JSON.
         super().__init__(
             name="AudienceAnalyst",
             instruction=system_prompt, # Pass system_prompt as instruction
-            description="Analyzes target audience for marketing campaigns."
+            description="Analyzes target audience for marketing campaigns.",
+            output_key="audience_analysis"
         )
 
 audience_analyst_agent = AudienceAnalystAgent()

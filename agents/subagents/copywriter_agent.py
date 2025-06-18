@@ -53,7 +53,8 @@ Only generate text optimized for engagement based on the audience insights and s
         super().__init__(
             name="CopywriterFormatter",
             instruction=system_prompt,
-            description="Generates and formats marketing copy for various digital platforms."
+            description="Generates and formats marketing copy for various digital platforms.",
+            output_key="marketing_copy"
         )
         # You might initialize your LLM here or expect it to be passed via a method
         # self.llm = YourLLMModel() # Example

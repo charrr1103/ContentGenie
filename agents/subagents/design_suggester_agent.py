@@ -51,7 +51,8 @@ If the user wants to generate images based on these design suggestions, provide 
         super().__init__(
             name="DesignSuggester",
             instruction=system_prompt,
-            description="Recommends visual and stylistic elements for branding and content design."
+            description="Recommends visual and stylistic elements for branding and content design.",
+            output_key="design_suggestion"
         )
 
     # The execute method for DesignSuggesterAgent

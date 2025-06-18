@@ -32,7 +32,8 @@ Keep your tone professional and strategic. Aim for clarity, actionability, and i
         super().__init__(
             name="ContentStrategist",
             instruction=system_prompt,
-            description="Develops budget-aware content strategies and prompts for budget if missing."
+            description="Develops budget-aware content strategies and prompts for budget if missing.",
+            output_key="content_strategy"
         )
 
 
