@@ -1,16 +1,26 @@
 import os
+import io
 from agents.base_agent import BaseAgent
 from PIL import Image
+from google.cloud import storage
+import google.generativeai as genai
+
+# GCS Client setup
+gcs_client = storage.Client()
+
+# Gemini model setup
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+gemini_model = genai.GenerativeModel("gemini-1.5-pro-latest")
 
 class ReviewerAgent(BaseAgent):
     def __init__(self):
         system_prompt = """
 You are the 'Reviewer' agent. Your task is to evaluate the entire content pipeline including:
 
-1. Audience Profile
-2. Strategy Plan
+1. Audience Analysis
+2. Content Strategy
 3. Marketing Copy
-4. Visual Design Suggestions
+4. Design Suggestion
 5. (Optional) Actual Image
 
 Audience Analysis:
@@ -78,10 +88,13 @@ suggestion:
             description="Reviews full marketing pipeline and embeds image in the visual review section."
         )
 
-        
-
-
-
+    def _load_image_from_gcs(self, gcs_uri: str) -> Image.Image:
+        """Download and return image as PIL.Image from a GCS URI"""
+        bucket_name, blob_path = gcs_uri.replace("gs://", "").split("/", 1)
+        bucket = gcs_client.bucket(bucket_name)
+        blob = bucket.blob(blob_path)
+        img_bytes = blob.download_as_bytes()
+        return Image.open(io.BytesIO(img_bytes))    
 
     def execute(
         self,
@@ -104,37 +117,41 @@ suggestion:
         Returns:
             Structured review output.
         """
-        image_review_text = "No image provided."
-        image_path_display = "[No image file path]"
+
+        """
+        Full review including visual image analysis from GCS.
+        """
+
+        image_path_display = "[No image provided]"
+        image_review_text = "No image included for evaluation."
 
         if image_generation_output and image_generation_output.get("status") == "success":
-            filename = image_generation_output.get("filename")
-            image_path = os.path.join("generated_images", filename)
-            image_path_display = f"[IMAGE DISPLAYED: {image_path}]"
-
-            if os.path.exists(image_path):
+            gcs_uri = image_generation_output.get("gcs_uri")
+            if gcs_uri:
+                image_path_display = f"[IMAGE DISPLAYED: {gcs_uri}]"
                 try:
-                    with Image.open(image_path) as img:
-                        vision_response = gemini_model.generate_content([
-                            img,
-                            "Evaluate this marketing image. Does it align with modern branding? Consider layout, color, and tone consistency with the copy and design plan."
-                        ])
-                        image_review_text = vision_response.text
+                    image = self._load_image_from_gcs(gcs_uri)
+                    gemini_response = gemini_model.generate_content([
+                        image,
+                        "Evaluate this image for branding tone, clarity, layout, and marketing effectiveness."
+                    ])
+                    image_review_text = gemini_response.text
                 except Exception as e:
-                    image_review_text = f"[Image processing error: {e}]"
+                    image_review_text = f"[Error loading image from GCS: {e}]"
+
 
         # Build the review prompt
         user_message = f"""
-original "audience_profile":
+original "Audience Analysis":
 {audience_analysis}
 
-original "strategy_summary":
+original "Content Strategy":
 {content_strategy}
 
-original "marketing_copy":
+original "Marketing Copy":
 {marketing_copy}
 
-original "design_recommendations":
+original "Design Suggestion":
 {design_suggestion}
 
 original "image_generation_result":
