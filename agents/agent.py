@@ -26,7 +26,7 @@ from .subagents.copywriter_agent import copywriter_agent
 from .subagents.design_suggester_agent import design_suggester_agent
 from .subagents.image_generator_agent import image_generator_agent
 from .subagents.reviewer_agent import reviewer_agent
-#from .subagents.scheduler_agent import scheduler_agent
+from .subagents.scheduler_agent import scheduler_agent
 
 # Import BaseAgent and use it consistently
 from .base_agent import BaseAgent
@@ -48,7 +48,7 @@ contentgenie_orchestrator = Agent(
         AgentTool(agent=design_suggester_agent),
         AgentTool(agent=image_generator_agent),
         AgentTool(agent=reviewer_agent),
-        #AgentTool(agent=scheduler_agent),
+        AgentTool(agent=scheduler_agent),
     ]
 )
 

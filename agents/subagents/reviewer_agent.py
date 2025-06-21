@@ -37,21 +37,26 @@ Design Suggestion:
 
 Based on the output from each component:
 
-- Take entire component output.
-- DO NOT summarize the component output.
-- Preserve and review entire component output not summarize them. 
+- Take entire component output as input.
+- Preserve and review entire component output not summarize them or curtail them. 
 - Modify and improve the component contents in terms of grammar, clarity and tone.
 - Give suggestions and explain why suggest so after modifying the parts.
 - If unchanged, repeat the original exactly under `modified`.
 - Score it from 1 to 10 based on clarity, alignment with goal, and usefulness for the campaign.
 - Strictly follow the output format for each components.
-- Do not skip any output for any components in term of length or brevity
 
+
+DO NOT:
+- DO NOT summarize the component output.
+- DO NOT remove for brevity
+- DO NOT provide a summarisation as a output (e.g. The marketing copy is generally well-written and aligned with the target audience. Minor tweaks could be made to personalize it further (e.g., incorporating specific fitness goals into the email/landing page copy). The examples provided cover a good range of platforms and content formats. The design suggestions are comprehensive and well-suited to the target audience. The color palette, typography choices, and imagery style all contribute to a modern, healthy, and convenient brand image. The inclusion of an image generation prompt is helpful for visualizing the desired aesthetic. No changes needed.)
+- DO NOT shorten the any component output
+- Do not use ... to skip any content
 ---
 
 REQUIRED OUTPUT FORMAT (for all components except image):
 - Bold the header (e.g. Original "<component>", Suggestion)
-- Leave 2 lines after each components
+- Blank 3 lines after each components suggestion
 
 Original "<component>":
 <entire original content>
@@ -64,6 +69,8 @@ Modified "<component>":
 
 Suggestion:
 <describe what was changed or why no change was needed>
+
+<br><br><br>
 
 For "image_generation_result", omit `modified`, but include:
 
@@ -141,29 +148,70 @@ suggestion:
 
 
         # Build the review prompt
-        user_message = f"""
-original "Audience Analysis":
+        uuser_message = f"""
+Original "audience_profile":
 {audience_analysis}
 
-original "Content Strategy":
+Original "strategy_summary":
 {content_strategy}
 
-original "Marketing Copy":
+Original "marketing_copy":
 {marketing_copy}
 
-original "Design Suggestion":
+Original "design_recommendations":
 {design_suggestion}
 
-original "image_generation_result":
+Original "image_generation_result":
 {image_path_display}
 {image_review_text}
 
-For each component, respond with:
+### EXAMPLE OUTPUT FORMAT ###
 
-- original "<component>"
-- original "<component>" score (1-10)
-- modified "<component>"  ← OMIT for image
-- suggestion
+**Original "audience_profile":**
+
+**Original "audience_profile" score:**
+
+**Modified "audience_profile":**
+
+**Suggestion:**
+
+<br><br>
+
+**Original "strategy_summary":**
+
+**Original "strategy_summary" score:**
+
+**Modified "strategy_summary":**
+
+**Suggestion:**
+
+<br><br><br>
+
+**Original "marketing_copy":**
+
+**Original "marketing_copy" score:**
+
+**Modified "marketing_copy":**
+
+**Suggestion:**
+
+<br><br><br>
+
+**Original "design_recommendations":**
+
+**Original "design_recommendations" score:**
+
+**Modified "design_recommendations":**
+
+**Suggestion:**
+
+<br><br><br>
+
+**Original "image_generation_result":**
+
+**Original "image_generation_result" score:**
+
+**Suggestion:**
 """
         print(f"[{self.name}] Reviewing full content with image embed...")
         try:

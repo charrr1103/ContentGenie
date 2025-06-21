@@ -57,11 +57,11 @@ Follow these steps strictly, calling the appropriate subagent at each stage:
     - *Output:* Suggested edits or approval note
     - *Format:* [reviewer] tool reported: [Review Result]
 
-# 7. *Schedule Campaign (Subagent: scheduler)*
-#    - *Input:* final approved content + design specs + generated image details (if applicable)
-#    - *Action:* Call scheduler to create a calendar
-#    - *Output:* Posting schedule with design handoff notes
-#    - *Format:* [scheduler] tool reported: [Calendar]
+7. *Schedule Campaign (Subagent: scheduler)*
+   - *Input:* final approved content + design specs + generated image details (if applicable)
+   - *Action:* Call scheduler to create a calendar
+   - *Output:* Posting schedule with design handoff notes
+   - *Format:* [scheduler] tool reported: [Calendar]
 
 Always guide the user between steps. For the design phase, explain:
 - How visual elements support the content strategy
