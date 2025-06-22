@@ -4,6 +4,7 @@ from agents.base_agent import BaseAgent
 from PIL import Image
 from google.cloud import storage
 import google.generativeai as genai
+import re
 
 # GCS Client setup
 gcs_client = storage.Client()
@@ -44,6 +45,7 @@ Based on the output from each component:
 - If unchanged, repeat the original exactly under `modified`.
 - Score it from 1 to 10 based on clarity, alignment with goal, and usefulness for the campaign.
 - Strictly follow the output format for each components.
+- You MUST repeat the full original text under **Original "<component>":**
 
 
 DO NOT:
@@ -52,23 +54,26 @@ DO NOT:
 - DO NOT provide a summarisation as a output (e.g. The marketing copy is generally well-written and aligned with the target audience. Minor tweaks could be made to personalize it further (e.g., incorporating specific fitness goals into the email/landing page copy). The examples provided cover a good range of platforms and content formats. The design suggestions are comprehensive and well-suited to the target audience. The color palette, typography choices, and imagery style all contribute to a modern, healthy, and convenient brand image. The inclusion of an image generation prompt is helpful for visualizing the desired aesthetic. No changes needed.)
 - DO NOT shorten the any component output
 - Do not use ... to skip any content
+- DO NOT summarize or say "See original above"
+- DO NOT omit any part of the original content
 ---
 
 REQUIRED OUTPUT FORMAT (for all components except image):
 - Bold the header (e.g. Original "<component>", Suggestion)
 - Blank 3 lines after each components suggestion
 
-Original "<component>":
-<entire original content>
+**Original "strategy_summary":**
+This campaign is designed to build brand awareness...
 
-Original "<component>" score:
-<score from 1 to 10>
+**Original "strategy_summary" score:**
+8
 
-Modified "<component>":
-<full content with specific edits, OR repeat original if no changes>
+**Modified "strategy_summary":**
+This campaign aims to boost visibility...
 
-Suggestion:
-<describe what was changed or why no change was needed>
+**Suggestion:**
+Improved tone and reduced wordiness. Clearer goal linkage.
+
 
 <br><br><br>
 
@@ -86,6 +91,7 @@ suggestion:
 
 - Respond in plain text, follow structure exactly.
 - DO NOT truncate the response
+- Respond as if the reviewer and the consumer cannot scroll up. Repeat everything required.
 
 """    
 
@@ -109,7 +115,8 @@ suggestion:
         content_strategy: str,
         marketing_copy: str,
         design_suggestion: str,
-        image_generation_output: dict = None
+        image_generation_output: dict = None,
+        tool_context=None
     ) -> str:
         """
         Full multimodal review, includes displaying the image file.
@@ -217,11 +224,20 @@ Original "image_generation_result":
         try:
             review_output = self.call_llm(system_prompt=self.instruction, user_message=user_message)
             print(f"[{self.name}] Review complete.")
+
+            # Extract modified strategy and copy
+            modified_parts = self.extract_modified_components(review_output)
+
+            # Save to session if tool_context is provided
+            if tool_context:
+                if "strategy_summary" in modified_parts:
+                    tool_context.session.set("final_strategy", modified_parts["strategy_summary"])
+                if "marketing_copy" in modified_parts:
+                    tool_context.session.set("final_copy", modified_parts["marketing_copy"])
+
             return review_output
         except Exception as e:
-            print(f"[{self.name}] An error occurred during review: {e}")
-            return f"Error: An error occurred during review: {e}"
-
+            return f"Error: Review failed: {e}"
    
 # Instantiate
 reviewer_agent = ReviewerAgent()
