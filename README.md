@@ -3,7 +3,7 @@
 **AI-Powered Multi-Agent Marketing Content Studio**
 
 **Agent Architecture Diagram**
-![ContentGenie Architecture](diagram/arch_diagram-05062025.png)
+![ContentGenie Architecture](diagram/arch-diagram.png)
 
 ## Key Features ✨
 
