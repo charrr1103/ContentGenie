@@ -155,7 +155,7 @@ suggestion:
 
 
         # Build the review prompt
-        uuser_message = f"""
+        user_message = f"""
 Original "audience_profile":
 {audience_analysis}
 
