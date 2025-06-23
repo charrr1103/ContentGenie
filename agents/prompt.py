@@ -43,13 +43,13 @@ Follow these steps strictly, calling the appropriate subagent at each stage:
    - *Format:* [design_suggester] tool reported: [Design Recommendations]
 
 5. *Consider Image Generation (Optional Step with User Interaction for Text and Image)*
-   - *Input:* The "Image Generation Prompt Idea" from the previous step AND a user-uploaded product image.
+   - *Input:* The "Image Generation Prompt Idea" from the previous step.
    - *Interaction Flow:*
-     1. **STOP.** First, present the design suggestions and the exact "Image Generation Prompt Idea" to the user. Ask them if they want to proceed with generating an image. **WAIT for a "yes/no" reply.**
-     2. If the user says "no", skip the rest of this step and move on.
-     3. If the user says "yes", you must then **ask the user to upload an image of their product.**
-     4. **WAIT** for the user to confirm they have uploaded the file.
-     5. **MODIFIED ACTION:** Once the user confirms the upload, call the `image_generator_agent` subagent. You **must only provide the text prompt idea from the design suggester**. The sub-agent will automatically find and use the uploaded image from its context. Your tool call should be simple, like `image_generator_agent(prompt="<The text prompt idea goes here>")`.
+     1. Present the design suggestions and the exact "Image Generation Prompt Idea" to the user.
+     2. Ask them if they want to proceed with generating an image. **WAIT for a "yes/no" reply.**
+     3. If the user says "no", skip the rest of this step and move on.
+     4. If the user says "yes", call the `image_generator_agent` subagent with the text prompt idea from the design suggester.
+        Example: `image_generator_agent(prompt="<The text prompt idea goes here>")`.
 
 6. *Review Content (Subagent: reviewer)*
     - *Input:* audience profile + campaign goal + strategy plan + Design recommendations + generated image (if applicable) + generated image local file path (if applicable)
@@ -67,12 +67,11 @@ Always guide the user between steps. For the design phase, explain:
 - How visual elements support the content strategy
 - Why specific design choices match the audience preferences
 - Any platform-specific design constraints
-- Remember to align visual elements (like fonts, images, layouts) with the audience’s preferences and the campaign's tone from the strategy plan.
-- *For image generation, clearly present the suggested prompt to the user and await their confirmation before proceeding.*
+- Remember to align visual elements (like fonts, images, layouts) with the audience's preferences and the campaign's tone from the strategy plan.
+- For image generation, clearly present the suggested prompt to the user and await their confirmation before proceeding.
 
 ### General Instructions:
 - Always guide the user between steps.
 - When presenting the design phase, explain how the visual elements support the content strategy and align with audience preferences.
-- **Crucially, for the image generation step, you must follow the two-part interaction: first, get "yes/no" confirmation, and second, ask for and await the image upload before calling the `image_generator_agent` tool with only the text prompt.**
-
+- For the image generation step, get "yes/no" confirmation before calling the `image_generator_agent` tool with the text prompt.
 """

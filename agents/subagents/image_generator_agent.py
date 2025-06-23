@@ -2,6 +2,8 @@ import os
 import traceback
 from pathlib import Path
 import io
+import subprocess
+import platform
 
 # --- Imports for Image Display ---
 import IPython.display
@@ -24,9 +26,9 @@ load_dotenv()
 
 # Models
 REASONING_MODEL = "gemini-1.5-pro-latest"
-IMAGE_MODEL = "imagen-3.0-generate-002" # This model is for text-to-image generation.
+IMAGE_MODEL = "imagen-3.0-generate-002"  # This model is for text-to-image generation.
 
-# Local storage path (still useful for local viewing/debugging)
+# Local storage path
 LOCAL_IMAGE_DIR = "generated_images"
 os.makedirs(LOCAL_IMAGE_DIR, exist_ok=True)
 
@@ -64,11 +66,27 @@ def is_in_notebook() -> bool:
     except NameError:
         return False
 
+
 def display_image(pil_image: PIL_Image.Image) -> None:
     """Displays a PIL image in a notebook with default size."""
     if pil_image.mode != "RGB":
         pil_image = pil_image.convert("RGB")
     IPython.display.display(pil_image)
+
+
+def open_image_with_default_app(image_path: str) -> None:
+    """Opens an image with the system's default application."""
+    try:
+        if platform.system() == 'Darwin':  # macOS
+            subprocess.run(['open', image_path], check=True)
+        elif platform.system() == 'Windows':  # Windows
+            os.startfile(image_path)
+        else:  # Linux and other Unix-like systems
+            subprocess.run(['xdg-open', image_path], check=True)
+        print(f"Opened image with default application: {image_path}")
+    except Exception as e:
+        print(f"Error opening image: {e}")
+
 
 def generate_image(
     tool_context: ToolContext,
@@ -77,7 +95,7 @@ def generate_image(
 ) -> dict:
     """
     Generates an image from a text prompt, uploads it to GCS, saves it to the ADK UI,
-    and returns the GCS path.
+    and returns the GCS path. Opens the image with the default system application.
     """
     if not client:
         return {"status": "Failed", "detail": "Vertex AI Client not initialized."}
@@ -101,7 +119,7 @@ def generate_image(
 
         # --- 1. Upload to Google Cloud Storage (if configured) ---
         gcs_uri = None
-        gcs_error = None # Variable to hold a potential error message
+        gcs_error = None  # Variable to hold a potential error message
         if storage_client and GCS_BUCKET_NAME:
             try:
                 bucket = storage_client.bucket(GCS_BUCKET_NAME)
@@ -113,9 +131,8 @@ def generate_image(
                 # Don't return. Just log the error and continue.
                 gcs_error = str(e)
                 print(f"ERROR: Failed to upload to GCS: {gcs_error}")
-        
+
         # --- 2. Save artifact to ADK Web UI ---
-        # This part will now be reached even if GCS upload fails.
         tool_context.save_artifact(
             filename,
             types.Part.from_bytes(data=image_bytes, mime_type="image/png"),
@@ -123,12 +140,15 @@ def generate_image(
         print(f"[{tool_context.agent_name}] Artifact saved to ADK UI panel.")
 
         # --- 3. Handle local display/saving ---
-        if is_in_notebook():
-            display_image(pil_image)
+        local_path = str(Path(LOCAL_IMAGE_DIR) / filename)
+        pil_image.save(local_path)
+        print(f"[{tool_context.agent_name}] Image saved locally at: {local_path}")
+
+        # Open the image with the default application
+        if not is_in_notebook():  # Only open with Photos app if not in a notebook
+            open_image_with_default_app(local_path)
         else:
-            local_path = Path(LOCAL_IMAGE_DIR) / filename
-            pil_image.save(local_path)
-            print(f"[{tool_context.agent_name}] Image saved locally at: {local_path}")
+            display_image(pil_image)  # Use notebook display if in notebook
 
         # --- 4. Return a detailed result with the GCS path ---
         detail_message = f"I've created an image and saved it to the ADK UI. "
@@ -141,15 +161,17 @@ def generate_image(
             "status": "success",
             "detail": detail_message,
             "filename": filename,
-            "gcs_uri": gcs_uri
+            "gcs_uri": gcs_uri,
+            "local_path": local_path
         }
 
     except Exception as e:
         traceback.print_exc()
         return {"status": "failed", "detail": f"Error during image generation: {type(e).__name__}: {e}"}
 
+
 # Agent definition
-image_generator_agent = Agent( # Renamed for clarity
+image_generator_agent = Agent(
     name="image_generator_agent",
     model=REASONING_MODEL,
     description="An agent that generates images from text descriptions and saves them to Google Cloud Storage.",
@@ -166,14 +188,14 @@ if __name__ == "__main__":
     if is_in_notebook():
         print("⚠️ Running in a notebook. The interactive command-line loop is disabled.")
         print("   To test, call Runner.run() in a new cell, e.g.:")
-        print("   Runner.run(agent=content_generator_agent, prompt='a photorealistic painting of a robot artist in a Parisian studio')")
+        print("   Runner.run(agent=image_generator_agent, prompt='a photorealistic painting of a robot artist in a Parisian studio')")
     else:
         # Check if GCS is configured for the local run
         if not GCS_BUCKET_NAME:
             print("\nWARNING: GCS_BUCKET_NAME is not set in your .env file. Images will not be uploaded to GCS during this local run.")
             
         artifact_service = InMemoryArtifactService()
-        print("\n--- Starting Content Generation Agent ---")
+        print("\n--- Starting Image Generation Agent ---")
         print("Enter a text prompt to generate an image, or 'quit' to exit.")
         while True:
             user_input = input("You (text prompt): ")
@@ -182,7 +204,7 @@ if __name__ == "__main__":
 
             response_generator = Runner.run(
                 agent=image_generator_agent,
-                prompt=user_input, # Agent is configured to take a text prompt for image generation
+                prompt=user_input,
                 artifact_service=artifact_service,
             )
         
