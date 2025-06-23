@@ -1,6 +1,8 @@
 # ContentGenie🧞‍♂️
 
 **AI-Powered Multi-Agent Marketing Content Studio**
+# ContentGenie
+ContentGenie is a multi-agent content studio built with ADK and integrated with Gemini and Google Cloud. The system analyzes products, identifies ideal audiences, generates campaign strategies, creates customized copy, and formats content for specific channels. Designed to empower small teams with powerful, automated marketing workflows.
 
 **Agent Architecture Diagram**
 ![ContentGenie Architecture](diagram/arch-diagram.png)
