@@ -82,18 +82,18 @@ adk web
 ```
 
 ### Team 👥
-** Team Member A [Lee Shao Yuan - https://github.com/Ser1ou5ly]: Quality Assurance & Scheduling**
+#### Team Member A [Lee Shao Yuan - https://github.com/Ser1ou5ly]: Quality Assurance & Scheduling
 **Agents Owned:**
 - **Reviewer Agent**: Performs content quality checks (grammar, tone, marketing effectiveness)
 - **Scheduler Agent**: Generates content calendars (Google Sheets/CSV output)
 
-** Team Member B [Clarisse Hooi Wai Leng - https://github.com/Clarisse1007]: Audience & Content Specialist**
+#### Team Member B [Clarisse Hooi Wai Leng - https://github.com/Clarisse1007]: Audience & Content Specialist
 **Agents Owned:**
 - **Audience Analyst Agent**: Generates detailed customer personas
 - **Copywriter Agent**: Creates platform-optimized marketing copy
 - **Image Generator Agent**: Produces AI visuals from text prompts
 
-** Team Member C [Charmaine Hooi Wai Yee - https://github.com/charrr1103]: System Architect & Strategist**
+#### Team Member C [Charmaine Hooi Wai Yee - https://github.com/charrr1103]: System Architect & Strategist
 **Agents Owned:**
 - **Orchestrator Agent**: Manages end-to-end workflow
 - **Content Strategist Agent**: Develops campaign plans
