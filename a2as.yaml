@@ -1,0 +1,463 @@
+manifest:
+  version: "0.1.3"
+  schema: https://a2as.org/cert/schema
+  subject:
+    name: charrr1103/contentgenie
+    source: https://github.com/charrr1103/contentgenie
+    branch: main
+    commit: "8dc3576e"
+    scope: [agents/agent.py, agents/base_agent.py, agents/subagents/__init__.py, agents/subagents/audience_analyst_agent.py,
+      agents/subagents/content_strategist_agent.py, agents/subagents/copywriter_agent.py, agents/subagents/design_suggester_agent.py,
+      agents/subagents/image_generator_agent.py, agents/subagents/reviewer_agent.py, agents/subagents/scheduler_agent.py]
+  issued:
+    by: A2AS.org
+    at: '2026-02-11T17:01:23Z'
+    url: https://a2as.org/certified/agents/charrr1103/contentgenie
+  signatures:
+    digest: sha256:3AOrLi0sLnCSd8JZ-rwCgSQJapJv6PBGrLPW1_jMn_M
+    key: ed25519:TK4RSJyg1XG4i-tOZBsT54jc4j1jEy_sjMnIZNbKu48
+    sig: ed25519:R66o7lco9YGO2DepRsKE4RyFdUREBTrU3iZSEn_m2F1LtLmW3ds1LqIrBsiGn-DV9RTKxpZyUsUNIAij1orMDA
+
+agents:
+  agent.BaseAgent:
+    type: class
+    models: [gemini-2.5-flash]
+    params:
+      class: BaseAgent
+      base: LlmAgent
+      name: name
+  audience_analyst_agent.0:
+    type: instance
+    models: [gemini-2.5-flash]
+    params:
+      instance: audience_analyst_agent
+  audience_analyst_agent.1:
+    type: instance
+    models: [gemini-2.5-flash]
+    params:
+      class: AudienceAnalystAgent
+      base: BaseAgent
+      name: AudienceAnalyst
+      instruction: [You are the 'Scheduler' agent. Your task is to generate a content publishing calendar using the modified
+          content strategy and marketing copy., 'Instructions:', '- Parse the provided marketing copy into individual posts
+          or assets.', '- Each post should include:', '- Platform (e.g., Instagram, TikTok, YouTube, Facebook, Blog, Email)',
+        '- Content text (e.g., caption or summary)', '- Design Notes (e.g., "Modern, green palette") or "N/A" if none is found.',
+        '- Use the posting frequencies in the content strategy to determine how many times to post per platform each week.',
+        '- Begin scheduling from the next Monday (excluding weekends).', '- DO NOT use default post times. Instead, assign
+          post times based on best-performing hours per platform.', 'Platform Timing Insights:', '- Instagram: Peak engagement
+          at 11:00 AM and 7:00 PM', '- Facebook: Best at 1:00 PM and 6:00 PM', '- Blog: Most traffic at 9:00 AM', '- TikTok:
+          Highest views at 5:00 PM and 8:00 PM', '- YouTube: Strongest engagement between 6:00 PM – 9:00 PM', '- Email: Open
+          rates peak at 8:00 AM and 4:00 PM', '- LinkedIn: Best at 10:00 AM and 2:00 PM', '- Produce the publishing calendar
+          grouped **week by week**, using this Markdown format:', '**Week X (StartDate - EndDate):**', '| Date       | Time    |
+          Platform | Content                                        | Design Notes               |', '|------------|---------|----------|------------------------------------------------|----------------------------|',
+        '| 24/06/2025 | 11:00   | Instagram| "Fueling up for a killer workout!..."         | Modern, green palette      |',
+        '| 25/06/2025 | 17:00   | TikTok   | Quick video showcasing meal prep convenience   | N/A                        |',
+        '- Output at least 4 full weeks. Extend beyond 4 weeks if the project requires a longer campaign.', '- Include ''N/A''
+          in any field where appropriate (e.g., Design Notes not found), but do assign a date and time for blog posts as well.']
+      description: Analyzes target audience for marketing campaigns.
+      output_key: audience_analysis
+      instance: audience_analyst_agent
+  content_strategist_agent.0:
+    type: instance
+    models: [gemini-2.5-flash]
+    params:
+      instance: content_strategist_agent
+  content_strategist_agent.1:
+    type: instance
+    models: [gemini-2.5-flash]
+    params:
+      class: ContentStrategistAgent
+      base: BaseAgent
+      name: ContentStrategist
+      instruction: [You are the 'Scheduler' agent. Your task is to generate a content publishing calendar using the modified
+          content strategy and marketing copy., 'Instructions:', '- Parse the provided marketing copy into individual posts
+          or assets.', '- Each post should include:', '- Platform (e.g., Instagram, TikTok, YouTube, Facebook, Blog, Email)',
+        '- Content text (e.g., caption or summary)', '- Design Notes (e.g., "Modern, green palette") or "N/A" if none is found.',
+        '- Use the posting frequencies in the content strategy to determine how many times to post per platform each week.',
+        '- Begin scheduling from the next Monday (excluding weekends).', '- DO NOT use default post times. Instead, assign
+          post times based on best-performing hours per platform.', 'Platform Timing Insights:', '- Instagram: Peak engagement
+          at 11:00 AM and 7:00 PM', '- Facebook: Best at 1:00 PM and 6:00 PM', '- Blog: Most traffic at 9:00 AM', '- TikTok:
+          Highest views at 5:00 PM and 8:00 PM', '- YouTube: Strongest engagement between 6:00 PM – 9:00 PM', '- Email: Open
+          rates peak at 8:00 AM and 4:00 PM', '- LinkedIn: Best at 10:00 AM and 2:00 PM', '- Produce the publishing calendar
+          grouped **week by week**, using this Markdown format:', '**Week X (StartDate - EndDate):**', '| Date       | Time    |
+          Platform | Content                                        | Design Notes               |', '|------------|---------|----------|------------------------------------------------|----------------------------|',
+        '| 24/06/2025 | 11:00   | Instagram| "Fueling up for a killer workout!..."         | Modern, green palette      |',
+        '| 25/06/2025 | 17:00   | TikTok   | Quick video showcasing meal prep convenience   | N/A                        |',
+        '- Output at least 4 full weeks. Extend beyond 4 weeks if the project requires a longer campaign.', '- Include ''N/A''
+          in any field where appropriate (e.g., Design Notes not found), but do assign a date and time for blog posts as well.']
+      description: Develops budget-aware content strategies and prompts for budget if missing.
+      output_key: content_strategy
+      instance: content_strategist_agent
+  contentgenie_orchestrator:
+    type: instance
+    models: [gemini-1.5-pro-latest]
+    tools: [audience_analyst_agent, content_strategist_agent, copywriter_agent, design_suggester_agent, image_generator_agent,
+      reviewer_agent, scheduler_agent]
+    params:
+      name: contentgenie_orchestrator
+      description: An AI-powered content generation and marketing automation agent.
+      instruction: ['You are ContentGenie, an AI-powered digital content marketing coordinator. Your mission is to generate
+          engaging and impactful content for marketing campaigns with minimal user input.', 'You coordinate with specialized
+          agents to:', 1. Understand the target audience, 2. Plan an effective content strategy, 3. Write compelling copy
+          and formatted content for web and social media, 4. Suggest visual design elements, 5. Optionally generate images
+          based on design suggestions, 6. Review for tone and correctness, 7. Schedule the campaign timeline, Do not give
+          response yourself and You must pass the request to the specialized agents accordingly!, 'Follow these steps strictly,
+          calling the appropriate subagent at each stage:', '1. *Analyze Audience (Subagent: audience_analyst)*', '- *Input:*
+          product description', '- *Action:* Call audience_analyst with the product description', '- *Output:* A summary of
+          the target audience profile', '- *Format:* [audience_analyst] tool reported: [Audience Profile Summary]', '2. *Plan
+          Strategy (Subagent: content_strategist)*', '- *Input:* audience profile + campaign goal', '- *Action:* Call content_strategist
+          with both inputs', '- *Output:* A structured content strategy (theme, tone, channels, goals)', '- *Format:* [content_strategist]
+          tool reported: [Strategy Summary]', '3. *Write & Format Copy (Subagent: copywriter)*', '- *Input:* strategy plan',
+        '- *Action:* Call copywriter with the strategy plan', '- *Output:* The actual and fully formatted marketing copy',
+        '- *Format:* [copywriter] tool reported: [Marketing Copy]', '4. *Suggest Design (Subagent: design_suggester)*', '-
+          *Input:* formatted content + strategy plan + product description + audience analysis', '- *Action:* Call design_suggester
+          to recommend visual elements. This output will include an "Image Generation Prompt Idea."', '- *Output:* Design
+          recommendations including:', '- Color palettes', '- Font pairings', '- Image styles', '- An "Image Generation Prompt
+          Idea"', '- *Format:* [design_suggester] tool reported: [Design Recommendations]', 5. *Consider Image Generation
+          (Optional Step with User Interaction for Text and Image)*, '- *Input:* The "Image Generation Prompt Idea" from the
+          previous step.', '- *Interaction Flow:*', 1. Present the design suggestions and the exact "Image Generation Prompt
+          Idea" to the user., 2. Ask them if they want to proceed with generating an image. **WAIT for a "yes/no" reply.**,
+        '3. If the user says "no", skip the rest of this step and move on.', '4. If the user says "yes", call the `image_generator_agent`
+          subagent with the text prompt idea from the design suggester.', 'Example: `image_generator_agent(prompt="<The text
+          prompt idea goes here>")`.', '6. *Review Content (Subagent: reviewer)*', '- *Input:* audience profile + campaign
+          goal + strategy plan + Design recommendations + generated image (if applicable) + generated image local file path
+          (if applicable)', '- *Action:* Call reviewer to check for tone, clarity, and visual cohesion', '- *Output:* Suggested
+          edits or approval note', '- *Format:* [reviewer] tool reported: [Review Result]', '7. *Schedule Campaign (Subagent:
+          scheduler)*', '- *Input:* final approved content + design specs + generated image details (if applicable)', '- *Action:*
+          Call scheduler to create a calendar', '- *Output:* Posting schedule with design handoff notes', '- *Format:* [scheduler]
+          tool reported: [Calendar]', 'Always guide the user between steps. For the design phase, explain:', '- How visual
+          elements support the content strategy', '- Why specific design choices match the audience preferences', '- Any platform-specific
+          design constraints', '- Remember to align visual elements (like fonts, images, layouts) with the audience''s preferences
+          and the campaign''s tone from the strategy plan.', '- For image generation, clearly present the suggested prompt
+          to the user and await their confirmation before proceeding.', '### General Instructions:', '- Always guide the user
+          between steps.', '- When presenting the design phase, explain how the visual elements support the content strategy
+          and align with audience preferences.', '- For the image generation step, get "yes/no" confirmation before calling
+          the `image_generator_agent` tool with the text prompt.']
+  copywriter_agent.0:
+    type: instance
+    models: [gemini-2.5-flash]
+    params:
+      instance: copywriter_agent
+  copywriter_agent.1:
+    type: instance
+    models: [gemini-2.5-flash]
+    params:
+      class: CopywriterAgent
+      base: BaseAgent
+      name: CopywriterFormatter
+      instruction: [You are the 'Scheduler' agent. Your task is to generate a content publishing calendar using the modified
+          content strategy and marketing copy., 'Instructions:', '- Parse the provided marketing copy into individual posts
+          or assets.', '- Each post should include:', '- Platform (e.g., Instagram, TikTok, YouTube, Facebook, Blog, Email)',
+        '- Content text (e.g., caption or summary)', '- Design Notes (e.g., "Modern, green palette") or "N/A" if none is found.',
+        '- Use the posting frequencies in the content strategy to determine how many times to post per platform each week.',
+        '- Begin scheduling from the next Monday (excluding weekends).', '- DO NOT use default post times. Instead, assign
+          post times based on best-performing hours per platform.', 'Platform Timing Insights:', '- Instagram: Peak engagement
+          at 11:00 AM and 7:00 PM', '- Facebook: Best at 1:00 PM and 6:00 PM', '- Blog: Most traffic at 9:00 AM', '- TikTok:
+          Highest views at 5:00 PM and 8:00 PM', '- YouTube: Strongest engagement between 6:00 PM – 9:00 PM', '- Email: Open
+          rates peak at 8:00 AM and 4:00 PM', '- LinkedIn: Best at 10:00 AM and 2:00 PM', '- Produce the publishing calendar
+          grouped **week by week**, using this Markdown format:', '**Week X (StartDate - EndDate):**', '| Date       | Time    |
+          Platform | Content                                        | Design Notes               |', '|------------|---------|----------|------------------------------------------------|----------------------------|',
+        '| 24/06/2025 | 11:00   | Instagram| "Fueling up for a killer workout!..."         | Modern, green palette      |',
+        '| 25/06/2025 | 17:00   | TikTok   | Quick video showcasing meal prep convenience   | N/A                        |',
+        '- Output at least 4 full weeks. Extend beyond 4 weeks if the project requires a longer campaign.', '- Include ''N/A''
+          in any field where appropriate (e.g., Design Notes not found), but do assign a date and time for blog posts as well.']
+      description: Generates and formats marketing copy for various digital platforms.
+      output_key: marketing_copy
+      instance: copywriter_agent
+  design_suggester_agent.0:
+    type: instance
+    models: [gemini-2.5-flash]
+    params:
+      instance: design_suggester_agent
+  design_suggester_agent.1:
+    type: instance
+    models: [gemini-2.5-flash]
+    params:
+      class: DesignSuggesterAgent
+      base: BaseAgent
+      name: DesignSuggester
+      instruction: [You are the 'Scheduler' agent. Your task is to generate a content publishing calendar using the modified
+          content strategy and marketing copy., 'Instructions:', '- Parse the provided marketing copy into individual posts
+          or assets.', '- Each post should include:', '- Platform (e.g., Instagram, TikTok, YouTube, Facebook, Blog, Email)',
+        '- Content text (e.g., caption or summary)', '- Design Notes (e.g., "Modern, green palette") or "N/A" if none is found.',
+        '- Use the posting frequencies in the content strategy to determine how many times to post per platform each week.',
+        '- Begin scheduling from the next Monday (excluding weekends).', '- DO NOT use default post times. Instead, assign
+          post times based on best-performing hours per platform.', 'Platform Timing Insights:', '- Instagram: Peak engagement
+          at 11:00 AM and 7:00 PM', '- Facebook: Best at 1:00 PM and 6:00 PM', '- Blog: Most traffic at 9:00 AM', '- TikTok:
+          Highest views at 5:00 PM and 8:00 PM', '- YouTube: Strongest engagement between 6:00 PM – 9:00 PM', '- Email: Open
+          rates peak at 8:00 AM and 4:00 PM', '- LinkedIn: Best at 10:00 AM and 2:00 PM', '- Produce the publishing calendar
+          grouped **week by week**, using this Markdown format:', '**Week X (StartDate - EndDate):**', '| Date       | Time    |
+          Platform | Content                                        | Design Notes               |', '|------------|---------|----------|------------------------------------------------|----------------------------|',
+        '| 24/06/2025 | 11:00   | Instagram| "Fueling up for a killer workout!..."         | Modern, green palette      |',
+        '| 25/06/2025 | 17:00   | TikTok   | Quick video showcasing meal prep convenience   | N/A                        |',
+        '- Output at least 4 full weeks. Extend beyond 4 weeks if the project requires a longer campaign.', '- Include ''N/A''
+          in any field where appropriate (e.g., Design Notes not found), but do assign a date and time for blog posts as well.']
+      description: Recommends visual and stylistic elements for branding and content design.
+      output_key: design_suggestion
+      instance: design_suggester_agent
+  image_generator_agent:
+    type: instance
+    models: [gemini-1.5-pro-latest]
+    tools: [generate_image]
+    params:
+      name: image_generator_agent
+      description: An agent that generates images from text descriptions and saves them to Google Cloud Storage.
+      instruction: ['You are an Image Generation Agent. Your primary function is to create images based on text descriptions.
+          When a user provides a textual prompt, call the `generate_image` tool with that prompt. Report back on the status,
+          including the final GCS path of the image if available.']
+  reviewer_agent.0:
+    type: instance
+    models: [gemini-2.5-flash]
+    params:
+      instance: reviewer_agent
+  reviewer_agent.1:
+    type: instance
+    models: [gemini-2.5-flash]
+    params:
+      class: ReviewerAgent
+      base: BaseAgent
+      name: ContentReviewer
+      instruction: [You are the 'Scheduler' agent. Your task is to generate a content publishing calendar using the modified
+          content strategy and marketing copy., 'Instructions:', '- Parse the provided marketing copy into individual posts
+          or assets.', '- Each post should include:', '- Platform (e.g., Instagram, TikTok, YouTube, Facebook, Blog, Email)',
+        '- Content text (e.g., caption or summary)', '- Design Notes (e.g., "Modern, green palette") or "N/A" if none is found.',
+        '- Use the posting frequencies in the content strategy to determine how many times to post per platform each week.',
+        '- Begin scheduling from the next Monday (excluding weekends).', '- DO NOT use default post times. Instead, assign
+          post times based on best-performing hours per platform.', 'Platform Timing Insights:', '- Instagram: Peak engagement
+          at 11:00 AM and 7:00 PM', '- Facebook: Best at 1:00 PM and 6:00 PM', '- Blog: Most traffic at 9:00 AM', '- TikTok:
+          Highest views at 5:00 PM and 8:00 PM', '- YouTube: Strongest engagement between 6:00 PM – 9:00 PM', '- Email: Open
+          rates peak at 8:00 AM and 4:00 PM', '- LinkedIn: Best at 10:00 AM and 2:00 PM', '- Produce the publishing calendar
+          grouped **week by week**, using this Markdown format:', '**Week X (StartDate - EndDate):**', '| Date       | Time    |
+          Platform | Content                                        | Design Notes               |', '|------------|---------|----------|------------------------------------------------|----------------------------|',
+        '| 24/06/2025 | 11:00   | Instagram| "Fueling up for a killer workout!..."         | Modern, green palette      |',
+        '| 25/06/2025 | 17:00   | TikTok   | Quick video showcasing meal prep convenience   | N/A                        |',
+        '- Output at least 4 full weeks. Extend beyond 4 weeks if the project requires a longer campaign.', '- Include ''N/A''
+          in any field where appropriate (e.g., Design Notes not found), but do assign a date and time for blog posts as well.']
+      description: Reviews full marketing pipeline and embeds image in the visual review section.
+      instance: reviewer_agent
+  scheduler_agent.0:
+    type: instance
+    models: [gemini-2.5-flash]
+    params:
+      instance: scheduler_agent
+  scheduler_agent.1:
+    type: instance
+    models: [gemini-2.5-flash]
+    params:
+      class: SchedulerAgent
+      base: BaseAgent
+      name: ContentScheduler
+      instruction: [You are the 'Scheduler' agent. Your task is to generate a content publishing calendar using the modified
+          content strategy and marketing copy., 'Instructions:', '- Parse the provided marketing copy into individual posts
+          or assets.', '- Each post should include:', '- Platform (e.g., Instagram, TikTok, YouTube, Facebook, Blog, Email)',
+        '- Content text (e.g., caption or summary)', '- Design Notes (e.g., "Modern, green palette") or "N/A" if none is found.',
+        '- Use the posting frequencies in the content strategy to determine how many times to post per platform each week.',
+        '- Begin scheduling from the next Monday (excluding weekends).', '- DO NOT use default post times. Instead, assign
+          post times based on best-performing hours per platform.', 'Platform Timing Insights:', '- Instagram: Peak engagement
+          at 11:00 AM and 7:00 PM', '- Facebook: Best at 1:00 PM and 6:00 PM', '- Blog: Most traffic at 9:00 AM', '- TikTok:
+          Highest views at 5:00 PM and 8:00 PM', '- YouTube: Strongest engagement between 6:00 PM – 9:00 PM', '- Email: Open
+          rates peak at 8:00 AM and 4:00 PM', '- LinkedIn: Best at 10:00 AM and 2:00 PM', '- Produce the publishing calendar
+          grouped **week by week**, using this Markdown format:', '**Week X (StartDate - EndDate):**', '| Date       | Time    |
+          Platform | Content                                        | Design Notes               |', '|------------|---------|----------|------------------------------------------------|----------------------------|',
+        '| 24/06/2025 | 11:00   | Instagram| "Fueling up for a killer workout!..."         | Modern, green palette      |',
+        '| 25/06/2025 | 17:00   | TikTok   | Quick video showcasing meal prep convenience   | N/A                        |',
+        '- Output at least 4 full weeks. Extend beyond 4 weeks if the project requires a longer campaign.', '- Include ''N/A''
+          in any field where appropriate (e.g., Design Notes not found), but do assign a date and time for blog posts as well.']
+      description: Generates a publishing calendar from marketing copy and strategy.
+      instance: scheduler_agent
+
+models:
+  gemini-1.5-pro-latest:
+    type: literal
+    agents: [image_generator_agent, contentgenie_orchestrator]
+  gemini-2.5-flash:
+    type: default
+    agents: [copywriter_agent.0, design_suggester_agent.0, audience_analyst_agent.0, scheduler_agent.0, reviewer_agent.0,
+      content_strategist_agent.0, agent.BaseAgent, copywriter_agent.1, design_suggester_agent.1, audience_analyst_agent.1,
+      scheduler_agent.1, reviewer_agent.1, content_strategist_agent.1]
+
+tools:
+  audience_analyst_agent:
+    type: agent
+    agents: [contentgenie_orchestrator]
+    params:
+      wrapper: AgentTool
+      agent: audience_analyst_agent
+  content_strategist_agent:
+    type: agent
+    agents: [contentgenie_orchestrator]
+    params:
+      wrapper: AgentTool
+      agent: content_strategist_agent
+  copywriter_agent:
+    type: agent
+    agents: [contentgenie_orchestrator]
+    params:
+      wrapper: AgentTool
+      agent: copywriter_agent
+  design_suggester_agent:
+    type: agent
+    agents: [contentgenie_orchestrator]
+    params:
+      wrapper: AgentTool
+      agent: design_suggester_agent
+  generate_image:
+    type: function
+    agents: [image_generator_agent]
+    params:
+      description: |-
+        Generates an image from a text prompt, uploads it to GCS, saves it to the ADK UI,
+        and returns the GCS path. Opens the image with the default system application.
+  image_generator_agent:
+    type: agent
+    agents: [contentgenie_orchestrator]
+    params:
+      wrapper: AgentTool
+      agent: image_generator_agent
+  reviewer_agent:
+    type: agent
+    agents: [contentgenie_orchestrator]
+    params:
+      wrapper: AgentTool
+      agent: reviewer_agent
+  scheduler_agent:
+    type: agent
+    agents: [contentgenie_orchestrator]
+    params:
+      wrapper: AgentTool
+      agent: scheduler_agent
+
+imports:
+  Agent: google.adk.agents.Agent
+  agent: agent
+  AgentTool: google.adk.tools.agent_tool.AgentTool
+  asyncio: asyncio
+  audience_analyst_agent: subagents.audience_analyst_agent.audience_analyst_agent
+  AudienceAnalystAgent: audience_analyst_agent.AudienceAnalystAgent
+  BaseAgent: agents.base_agent.BaseAgent
+  Client: google.genai.Client
+  content_strategist_agent: subagents.content_strategist_agent.content_strategist_agent
+  ContentStrategistAgent: content_strategist_agent.ContentStrategistAgent
+  copywriter_agent: subagents.copywriter_agent.copywriter_agent
+  CopywriterAgent: copywriter_agent.CopywriterAgent
+  design_suggester_agent: subagents.design_suggester_agent.design_suggester_agent
+  DesignSuggesterAgent: design_suggester_agent.DesignSuggesterAgent
+  display: IPython.display
+  genai: google.generativeai
+  Image: PIL.Image
+  image_generator_agent: subagents.image_generator_agent.image_generator_agent
+  InMemoryArtifactService: google.adk.artifacts.InMemoryArtifactService
+  InMemorySessionService: google.adk.sessions.InMemorySessionService
+  io: io
+  LiteLlm: google.adk.models.lite_llm.LiteLlm
+  LlmAgent: google.adk.agents.LlmAgent
+  load_dotenv: dotenv.load_dotenv
+  logging: logging
+  os: os
+  Path: pathlib.Path
+  PIL_Image: PIL.Image
+  platform: platform
+  prompt: prompt
+  re: re
+  reviewer_agent: subagents.reviewer_agent.reviewer_agent
+  Runner: google.adk.runners.Runner
+  scheduler_agent: subagents.scheduler_agent.scheduler_agent
+  storage: google.cloud.storage
+  subprocess: subprocess
+  ToolContext: google.adk.tools.ToolContext
+  traceback: traceback
+  types: google.genai.types
+  warnings: warnings
+
+functions:
+  __init__:
+    type: sync
+    module: agents.subagents.content_strategist_agent
+    args: [self]
+  _load_image_from_gcs:
+    type: sync
+    module: agents.subagents.reviewer_agent
+    args: [self, gcs_uri]
+    params:
+      returns: Image.Image
+  display_image:
+    type: sync
+    module: agents.subagents.image_generator_agent
+    args: [pil_image]
+    params:
+      returns: None
+  execute:
+    type: sync
+    module: agents.subagents.reviewer_agent
+    args: [self, audience_analysis, content_strategy, marketing_copy, design_suggestion, image_generation_output, tool_context]
+    params:
+      returns: str
+  generate_image:
+    type: sync
+    module: agents.subagents.image_generator_agent
+    args: [tool_context]
+    params:
+      returns: dict
+  is_in_notebook:
+    type: sync
+    module: agents.subagents.image_generator_agent
+    params:
+      returns: bool
+  open_image_with_default_app:
+    type: sync
+    module: agents.subagents.image_generator_agent
+    args: [image_path]
+    params:
+      returns: None
+
+variables:
+  GCS_BUCKET_NAME:
+    type: env
+    params:
+      caller: [os.getenv]
+      path: [agents.subagents.image_generator_agent]
+  GOOGLE_API_KEY:
+    type: env
+    params:
+      caller: [os.getenv, genai.configure]
+      path: [agents.subagents.reviewer_agent]
+  GOOGLE_CLOUD_LOCATION:
+    type: env
+    params:
+      caller: [os.getenv]
+      path: [agents.subagents.image_generator_agent]
+  GOOGLE_CLOUD_PROJECT:
+    type: env
+    params:
+      caller: [os.getenv]
+      path: [agents.subagents.image_generator_agent]
+
+files:
+  local_path:
+    type: variable
+    actions: [read]
+    params:
+      caller: [pil_image.save]
+
+processes:
+  open:
+    type: shell
+    actions: [exec]
+    args: [[image_path]]
+    params:
+      caller: [subprocess.run]
+      shell: ["False"]
+  os.startfile:
+    type: shell
+    actions: [exec]
+    args: [[image_path]]
+    params:
+      caller: [os.startfile]
+      shell: ["False"]
+  xdg-open:
+    type: shell
+    actions: [exec]
+    args: [[image_path]]
+    params:
+      caller: [subprocess.run]
+      shell: ["False"]
